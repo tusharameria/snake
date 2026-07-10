@@ -1,4 +1,5 @@
 import './style.css'
+import { Game } from '@engine/Game';
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 
@@ -15,5 +16,5 @@ if (!ctx) {
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-ctx.fillStyle = "#1f2937";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+const game = new Game(canvas, ctx);
+game.start();
