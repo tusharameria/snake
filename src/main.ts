@@ -1,5 +1,6 @@
 import './style.css';
 import { Game } from './engine/Game';
+import { SnakeScene } from './game/SnakeScene';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 
@@ -16,5 +17,6 @@ if (!ctx) {
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const game = new Game(canvas, ctx);
+const scene = new SnakeScene();
+const game = new Game(canvas, ctx, scene);
 game.start();
