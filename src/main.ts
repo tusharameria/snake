@@ -1,5 +1,5 @@
 import './style.css'
-import { Game } from '@engine/Game';
+import { Game } from './engine/Game';
 
 const canvas = document.getElementById("game") as HTMLCanvasElement;
 
@@ -13,8 +13,8 @@ if (!ctx) {
   throw new Error("Could not get 2D context");
 }
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+// canvas.width = window.innerWidth;
+// canvas.height = window.innerHeight;
 
 const game = new Game(canvas, ctx);
 game.start();

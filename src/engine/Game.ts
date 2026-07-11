@@ -15,6 +15,8 @@ export class Game {
   }
 
   private render(): void {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
     this.ctx.fillStyle = `hsl(${Date.now() / 20}, 100%, 50%)`;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }

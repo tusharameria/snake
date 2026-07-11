@@ -1,11 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@engine/*": ["src/engine/*"],
-      "@game/*": ["src/game/*"],
-      "@assets/*": ["src/assets/*"],
-    },
     "target": "es2023",
     "module": "esnext",
     "lib": ["ES2023", "DOM"],
