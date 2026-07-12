@@ -43,7 +43,7 @@ export class SnakeScene implements Scene {
     this.timeElapsed += deltaTime;
     while (this.timeElapsed >= this.timePerStep) {
       const nextHead = this.snake.getNextHeadPosition();
-      if (this.board.hasWallAt(nextHead)) {
+      if (this.board.hasWallAt(nextHead) || this.snake.willCollideWithBody(nextHead)) {
         this.snake.reset();
         this.food.respawn(this.generateRandomEmptyPosition());
         this.timeElapsed = 0;

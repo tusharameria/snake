@@ -62,4 +62,15 @@ export class Snake {
     this.direction = DIRECTIONS.Right;
     this.pendingGrowth = 0;
   }
+
+  public willCollideWithBody(position: Position): boolean {
+    const startIdx = this.pendingGrowth > 0 ? 0 : 1;
+    for (let i = startIdx; i < this.body.length; i++) {
+      const bodyPart = this.body[i];
+      if (bodyPart.x === position.x && bodyPart.y === position.y) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
