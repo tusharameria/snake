@@ -5,6 +5,7 @@ import type { Position } from './Position';
 export class Snake {
   private body: Position[];
   private direction: Direction;
+  private pendingGrowth: number;
 
   public constructor() {
     this.body = [
@@ -13,6 +14,7 @@ export class Snake {
       { x: 5, y: 5 },
     ];
     this.direction = DIRECTIONS.Right;
+    this.pendingGrowth = 0;
   }
 
   public get segments(): readonly Position[] {
@@ -39,8 +41,16 @@ export class Snake {
 
   public move(): void {
     const nextHead = this.getNextHeadPosition();
-    this.body.shift();
+    if (this.pendingGrowth == 0) {
+      this.body.shift();
+    } else {
+      this.pendingGrowth--;
+    }
     this.body.push(nextHead);
+  }
+
+  public feed(): void {
+    this.pendingGrowth++;
   }
 
   public reset(): void {
@@ -50,5 +60,6 @@ export class Snake {
       { x: 5, y: 5 },
     ];
     this.direction = DIRECTIONS.Right;
+    this.pendingGrowth = 0;
   }
 }

@@ -3,6 +3,7 @@ import { Board } from './Board';
 import { CELL_SIZE, GRID_HEIGHT, GRID_WIDTH } from './Constants';
 import { DIRECTIONS } from './Direction';
 import { Food } from './Food';
+import type { Position } from './Position';
 import { Snake } from './Snake';
 
 export class SnakeScene implements Scene {
@@ -16,9 +17,8 @@ export class SnakeScene implements Scene {
   public constructor() {
     this.board = new Board(GRID_WIDTH, GRID_HEIGHT);
     this.snake = new Snake();
-    const emptyCells = this.board.getEmptyCells(this.snake.segments);
-    const randomIndex = Math.floor(Math.random() * emptyCells.length);
-    this.food = new Food(emptyCells[randomIndex]);
+    const randomPosition = this.generateRandomEmptyPosition();
+    this.food = new Food(randomPosition);
     window.addEventListener('keydown', this.onKeyDown);
   }
 
@@ -42,12 +42,18 @@ export class SnakeScene implements Scene {
   public update(deltaTime: number): void {
     this.timeElapsed += deltaTime;
     while (this.timeElapsed >= this.timePerStep) {
-      if (!this.board.hasWallAt(this.snake.getNextHeadPosition())) {
+      const nextHead = this.snake.getNextHeadPosition();
+      if (this.board.hasWallAt(nextHead)) {
+        this.snake.reset();
+        this.food.respawn(this.generateRandomEmptyPosition());
+        this.timeElapsed = 0;
+      } else {
+        if (this.food.position.x === nextHead.x && this.food.position.y === nextHead.y) {
+          this.snake.feed();
+          this.food.respawn(this.generateRandomEmptyPosition());
+        }
         this.snake.move();
         this.timeElapsed -= this.timePerStep;
-      } else {
-        this.snake.reset();
-        this.timeElapsed = 0;
       }
     }
   }
@@ -103,5 +109,11 @@ export class SnakeScene implements Scene {
       CELL_SIZE,
       CELL_SIZE,
     );
+  }
+
+  private generateRandomEmptyPosition(): Position {
+    const emptyCells = this.board.getEmptyCells(this.snake.segments);
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+    return emptyCells[randomIndex];
   }
 }
