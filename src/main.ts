@@ -1,6 +1,8 @@
 import './style.css';
 import { Game } from './engine/Game';
+import { type Screen } from './engine/Screen';
 import { SnakeScene } from './game/SnakeScene';
+import { HomeScreen } from './game/HomeScreen';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 
@@ -18,5 +20,6 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const scene = new SnakeScene();
-const game = new Game(canvas, ctx, scene);
+const homeScreen: Screen = new HomeScreen();
+const game = new Game(canvas, ctx, scene, homeScreen);
 game.start();

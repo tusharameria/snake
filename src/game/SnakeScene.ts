@@ -1,4 +1,5 @@
 import type { Scene } from '../engine/Scene';
+import { SCENE_EVENT, type SceneEvent } from '../engine/SceneEvent';
 import { Board } from './Board';
 import { CELL_SIZE, GRID_HEIGHT, GRID_WIDTH } from './Constants';
 import { DIRECTIONS } from './Direction';
@@ -12,14 +13,13 @@ export class SnakeScene implements Scene {
   private readonly food: Food;
 
   private timeElapsed = 0;
-  private timePerStep = 200;
+  private timePerStep = 150;
 
   public constructor() {
     this.board = new Board(GRID_WIDTH, GRID_HEIGHT);
     this.snake = new Snake();
     const randomPosition = this.generateRandomEmptyPosition();
     this.food = new Food(randomPosition);
-    window.addEventListener('keydown', this.onKeyDown);
   }
 
   private readonly onKeyDown = (event: KeyboardEvent): void => {
@@ -39,14 +39,20 @@ export class SnakeScene implements Scene {
     }
   };
 
-  public update(deltaTime: number): void {
+  public enter(): void {
+    window.addEventListener('keydown', this.onKeyDown);
+  }
+
+  public exit(): void {
+    window.removeEventListener('keydown', this.onKeyDown);
+  }
+
+  public update(deltaTime: number): SceneEvent {
     this.timeElapsed += deltaTime;
     while (this.timeElapsed >= this.timePerStep) {
       const nextHead = this.snake.getNextHeadPosition();
       if (this.board.hasWallAt(nextHead) || this.snake.willCollideWithBody(nextHead)) {
-        this.snake.reset();
-        this.food.respawn(this.generateRandomEmptyPosition());
-        this.timeElapsed = 0;
+        return SCENE_EVENT.GameOver;
       } else {
         if (this.food.position.x === nextHead.x && this.food.position.y === nextHead.y) {
           this.snake.feed();
@@ -56,6 +62,7 @@ export class SnakeScene implements Scene {
         this.timeElapsed -= this.timePerStep;
       }
     }
+    return SCENE_EVENT.None;
   }
 
   public render(ctx: CanvasRenderingContext2D): void {
@@ -65,6 +72,12 @@ export class SnakeScene implements Scene {
     this.renderGrids(ctx);
     this.renderSnake(ctx);
     this.renderFood(ctx);
+  }
+
+  public reset(): void {
+    this.snake.reset();
+    this.food.respawn(this.generateRandomEmptyPosition());
+    this.timeElapsed = 0;
   }
 
   private renderBoard(ctx: CanvasRenderingContext2D): void {
