@@ -5,9 +5,8 @@ import { Snake } from './Snake';
 export class SnakeScene implements Scene {
   private readonly snake: Snake;
 
-  private stepCount = 0;
   private timeElapsed = 0;
-  private timePerStep = 150;
+  private timePerStep = 1000;
 
   public constructor() {
     this.snake = new Snake();
@@ -16,7 +15,7 @@ export class SnakeScene implements Scene {
   public update(deltaTime: number): void {
     this.timeElapsed += deltaTime;
     while (this.timeElapsed >= this.timePerStep) {
-      this.stepCount++;
+      this.snake.move();
       this.timeElapsed -= this.timePerStep;
     }
   }

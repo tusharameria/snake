@@ -23,6 +23,7 @@ export class Game {
     const deltaTime = this.lastFrameTime === 0 ? 0 : timestamp - this.lastFrameTime;
     this.lastFrameTime = timestamp;
     this.scene.update(deltaTime);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.scene.render(this.ctx);
     requestAnimationFrame(this.loop);
   };
