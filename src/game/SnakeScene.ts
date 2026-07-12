@@ -1,16 +1,19 @@
 import type { Scene } from '../engine/Scene';
+import { Board } from './Board';
 import { CELL_SIZE, GRID_HEIGHT, GRID_WIDTH } from './Constants';
 import { DIRECTIONS } from './Direction';
 import { Snake } from './Snake';
 
 export class SnakeScene implements Scene {
   private readonly snake: Snake;
+  private readonly board: Board;
 
   private timeElapsed = 0;
-  private timePerStep = 1000;
+  private timePerStep = 200;
 
   public constructor() {
     this.snake = new Snake();
+    this.board = new Board(GRID_WIDTH, GRID_HEIGHT);
     window.addEventListener('keydown', this.onKeyDown);
   }
 
@@ -42,7 +45,19 @@ export class SnakeScene implements Scene {
   public render(ctx: CanvasRenderingContext2D): void {
     // Fill the wole canvas with color
     ctx.fillStyle = 'white';
+    this.renderBoard(ctx);
+    this.renderGrids(ctx);
+    this.renderSnake(ctx);
+  }
 
+  private renderBoard(ctx: CanvasRenderingContext2D): void {
+    ctx.fillStyle = 'red';
+    for (const wall of this.board.walls) {
+      ctx.fillRect(wall.x * CELL_SIZE, wall.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+    }
+  }
+
+  private renderGrids(ctx: CanvasRenderingContext2D): void {
     // Make grid borders
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 1;
@@ -60,10 +75,11 @@ export class SnakeScene implements Scene {
       ctx.lineTo(GRID_WIDTH * CELL_SIZE, y * CELL_SIZE);
       ctx.stroke();
     }
+  }
 
+  private renderSnake(ctx: CanvasRenderingContext2D): void {
     ctx.fillStyle = '#4CAF50';
-
-    for (const segment of this.snake.Segments) {
+    for (const segment of this.snake.segments) {
       ctx.fillRect(segment.x * CELL_SIZE, segment.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
     }
   }

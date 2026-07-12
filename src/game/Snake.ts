@@ -1,3 +1,4 @@
+import { GRID_HEIGHT, GRID_WIDTH } from './Constants';
 import { DIRECTIONS, type Direction } from './Direction';
 import type { Position } from './Position';
 
@@ -14,7 +15,7 @@ export class Snake {
     this.direction = DIRECTIONS.Right;
   }
 
-  public get Segments(): readonly Position[] {
+  public get segments(): readonly Position[] {
     return this.body;
   }
 
@@ -27,12 +28,12 @@ export class Snake {
     }
   }
 
-  private getNextHeadPosition(): Position {
+  public getNextHeadPosition(): Position {
     const head = this.body[this.body.length - 1];
 
     return {
-      x: head.x + this.direction.dx,
-      y: head.y + this.direction.dy,
+      x: (head.x + this.direction.dx + GRID_WIDTH) % GRID_WIDTH,
+      y: (head.y + this.direction.dy + GRID_HEIGHT) % GRID_HEIGHT,
     };
   }
 
