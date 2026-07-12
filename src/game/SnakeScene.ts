@@ -2,18 +2,23 @@ import type { Scene } from '../engine/Scene';
 import { Board } from './Board';
 import { CELL_SIZE, GRID_HEIGHT, GRID_WIDTH } from './Constants';
 import { DIRECTIONS } from './Direction';
+import { Food } from './Food';
 import { Snake } from './Snake';
 
 export class SnakeScene implements Scene {
   private readonly snake: Snake;
   private readonly board: Board;
+  private readonly food: Food;
 
   private timeElapsed = 0;
   private timePerStep = 200;
 
   public constructor() {
-    this.snake = new Snake();
     this.board = new Board(GRID_WIDTH, GRID_HEIGHT);
+    this.snake = new Snake();
+    const emptyCells = this.board.getEmptyCells(this.snake.segments);
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+    this.food = new Food(emptyCells[randomIndex]);
     window.addEventListener('keydown', this.onKeyDown);
   }
 
@@ -53,6 +58,7 @@ export class SnakeScene implements Scene {
     this.renderBoard(ctx);
     this.renderGrids(ctx);
     this.renderSnake(ctx);
+    this.renderFood(ctx);
   }
 
   private renderBoard(ctx: CanvasRenderingContext2D): void {
@@ -87,5 +93,15 @@ export class SnakeScene implements Scene {
     for (const segment of this.snake.segments) {
       ctx.fillRect(segment.x * CELL_SIZE, segment.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
     }
+  }
+
+  private renderFood(ctx: CanvasRenderingContext2D): void {
+    ctx.fillStyle = 'yellow';
+    ctx.fillRect(
+      this.food.position.x * CELL_SIZE,
+      this.food.position.y * CELL_SIZE,
+      CELL_SIZE,
+      CELL_SIZE,
+    );
   }
 }

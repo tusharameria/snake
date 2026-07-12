@@ -46,4 +46,23 @@ export class Board {
   public hasWallAt(position: Position): boolean {
     return this.walls.some((wall) => wall.x === position.x && wall.y === position.y);
   }
+
+  // TODO : Optimise the algo to find empty cells later
+  public getEmptyCells(occupiedPositions: readonly Position[]): readonly Position[] {
+    const res: Position[] = [];
+    for (let x = 0; x < this.width; x++) {
+      for (let y = 0; y < this.height; y++) {
+        if (this.hasWallAt({ x, y })) {
+          continue;
+        }
+        if (!occupiedPositions.some((pos) => pos.x === x && pos.y === y)) {
+          res.push({
+            x,
+            y,
+          });
+        }
+      }
+    }
+    return res;
+  }
 }
