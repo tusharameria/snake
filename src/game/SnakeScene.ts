@@ -1,5 +1,6 @@
 import type { Scene } from '../engine/Scene';
 import { CELL_SIZE, GRID_HEIGHT, GRID_WIDTH } from './Constants';
+import { DIRECTIONS } from './Direction';
 import { Snake } from './Snake';
 
 export class SnakeScene implements Scene {
@@ -10,7 +11,25 @@ export class SnakeScene implements Scene {
 
   public constructor() {
     this.snake = new Snake();
+    window.addEventListener('keydown', this.onKeyDown);
   }
+
+  private readonly onKeyDown = (event: KeyboardEvent): void => {
+    switch (event.key) {
+      case 'ArrowUp':
+        this.snake.setDirection(DIRECTIONS.Up);
+        break;
+      case 'ArrowDown':
+        this.snake.setDirection(DIRECTIONS.Down);
+        break;
+      case 'ArrowLeft':
+        this.snake.setDirection(DIRECTIONS.Left);
+        break;
+      case 'ArrowRight':
+        this.snake.setDirection(DIRECTIONS.Right);
+        break;
+    }
+  };
 
   public update(deltaTime: number): void {
     this.timeElapsed += deltaTime;

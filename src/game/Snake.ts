@@ -18,6 +18,15 @@ export class Snake {
     return this.body;
   }
 
+  public setDirection(direction: Direction): void {
+    const movingVertically = this.direction.dy !== 0;
+    const newDirectionIsVertical = direction.dy !== 0;
+
+    if (movingVertically !== newDirectionIsVertical) {
+      this.direction = direction;
+    }
+  }
+
   private getNextHeadPosition(): Position {
     const head = this.body[this.body.length - 1];
 
