@@ -42,4 +42,8 @@ export class Board {
   public get walls(): readonly Position[] {
     return this._walls;
   }
+
+  public hasWallAt(position: Position): boolean {
+    return this.walls.some((wall) => wall.x === position.x && wall.y === position.y);
+  }
 }

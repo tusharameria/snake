@@ -37,8 +37,13 @@ export class SnakeScene implements Scene {
   public update(deltaTime: number): void {
     this.timeElapsed += deltaTime;
     while (this.timeElapsed >= this.timePerStep) {
-      this.snake.move();
-      this.timeElapsed -= this.timePerStep;
+      if (!this.board.hasWallAt(this.snake.getNextHeadPosition())) {
+        this.snake.move();
+        this.timeElapsed -= this.timePerStep;
+      } else {
+        this.snake.reset();
+        this.timeElapsed = 0;
+      }
     }
   }
 

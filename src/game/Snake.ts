@@ -42,4 +42,13 @@ export class Snake {
     this.body.shift();
     this.body.push(nextHead);
   }
+
+  public reset(): void {
+    this.body = [
+      { x: 3, y: 5 },
+      { x: 4, y: 5 },
+      { x: 5, y: 5 },
+    ];
+    this.direction = DIRECTIONS.Right;
+  }
 }
