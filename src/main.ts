@@ -1,9 +1,9 @@
 import './style.css';
 import { Game } from './engine/core/Game';
-import { ClassicScene } from './snake/scenes/ClassicScene';
-import { HomeScreen } from './snake/ui/HomeScreen';
-import { GameOverScreen } from './snake/ui/GameOverScreen';
-import { PauseScreen } from './snake/ui/PauseScreen';
+import { ClassicScene } from './game/scenes/ClassicScene';
+import { HomeScreen } from './game/ui/HomeScreen';
+import { GameOverScreen } from './game/ui/GameOverScreen';
+import { PauseScreen } from './game/ui/PauseScreen';
 import { InputManager } from './engine/input/InputManager';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
