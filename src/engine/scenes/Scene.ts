@@ -1,4 +1,4 @@
-import type { SceneEvent } from './SceneEvent';
+import type { SceneEvent } from '../events/SceneEvent';
 
 export interface Scene {
   enter(): void;

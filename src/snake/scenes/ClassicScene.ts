@@ -1,63 +1,56 @@
-import type { Scene } from '../engine/Scene';
-import { SCENE_EVENT, type SceneEvent } from '../engine/SceneEvent';
-import { Board } from './Board';
-import { CELL_SIZE, GRID_HEIGHT, GRID_WIDTH } from './Constants';
-import { DIRECTIONS } from './Direction';
-import { Food } from './Food';
-import type { Position } from './Position';
-import { Snake } from './Snake';
+import type { InputManager } from '../../engine/input/InputManager';
+import type { Scene } from '../../engine/scenes/Scene';
+import { SCENE_EVENT, type SceneEvent } from '../../engine/events/SceneEvent';
+import { Board } from '../entities/Board';
+import { CELL_SIZE, GRID_HEIGHT, GRID_WIDTH } from '../Constants';
+import { DIRECTIONS } from '../entities/Direction';
+import { Food } from '../entities/Food';
+import type { Position } from '../entities/Position';
+import { Snake } from '../entities/Snake';
 
-export class SnakeScene implements Scene {
+export class ClassicScene implements Scene {
   private readonly snake: Snake;
   private readonly board: Board;
   private readonly food: Food;
-  private pauseRequested: boolean;
+  private readonly input: InputManager;
 
   private timeElapsed = 0;
   private timePerStep = 150;
 
-  public constructor() {
+  public constructor(input: InputManager) {
     this.board = new Board(GRID_WIDTH, GRID_HEIGHT);
     this.snake = new Snake();
     const randomPosition = this.generateRandomEmptyPosition();
     this.food = new Food(randomPosition);
-    this.pauseRequested = false;
+    this.input = input;
   }
 
-  private readonly onKeyDown = (event: KeyboardEvent): void => {
-    switch (event.key) {
-      case 'ArrowUp':
-        this.snake.setDirection(DIRECTIONS.Up);
-        break;
-      case 'ArrowDown':
-        this.snake.setDirection(DIRECTIONS.Down);
-        break;
-      case 'ArrowLeft':
-        this.snake.setDirection(DIRECTIONS.Left);
-        break;
-      case 'ArrowRight':
-        this.snake.setDirection(DIRECTIONS.Right);
-        break;
-      case 'P':
-      case 'p':
-        this.pauseRequested = true;
-        break;
+  private readonly checkPressedKey = (): void => {
+    if (this.input.wasKeyPressed('ArrowUp')) {
+      this.snake.setDirection(DIRECTIONS.Up);
+    }
+
+    if (this.input.wasKeyPressed('ArrowDown')) {
+      this.snake.setDirection(DIRECTIONS.Down);
+    }
+
+    if (this.input.wasKeyPressed('ArrowLeft')) {
+      this.snake.setDirection(DIRECTIONS.Left);
+    }
+
+    if (this.input.wasKeyPressed('ArrowRight')) {
+      this.snake.setDirection(DIRECTIONS.Right);
     }
   };
 
-  public enter(): void {
-    window.addEventListener('keydown', this.onKeyDown);
-  }
-
-  public exit(): void {
-    window.removeEventListener('keydown', this.onKeyDown);
-  }
+  public enter(): void {}
+  public exit(): void {}
 
   public update(deltaTime: number): SceneEvent {
-    if (this.pauseRequested) {
-      this.pauseRequested = false;
+    if (this.input.wasKeyPressed('P') || this.input.wasKeyPressed('p')) {
       return SCENE_EVENT.PauseGame;
     }
+    this.checkPressedKey();
     this.timeElapsed += deltaTime;
     while (this.timeElapsed >= this.timePerStep) {
       const nextHead = this.snake.getNextHeadPosition();
@@ -88,7 +81,6 @@ export class SnakeScene implements Scene {
     this.snake.reset();
     this.food.respawn(this.generateRandomEmptyPosition());
     this.timeElapsed = 0;
-    this.pauseRequested = false;
   }
 
   private renderBoard(ctx: CanvasRenderingContext2D): void {

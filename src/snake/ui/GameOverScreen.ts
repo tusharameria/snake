@@ -1,21 +1,23 @@
-import { BaseScreen } from '../engine/BaseScreen';
-import { SCREEN_EVENT, type ScreenEvent } from '../engine/ScreenEvent';
+import { BaseScreen } from '../../engine/screens/BaseScreen';
+import type { InputManager } from '../../engine/input/InputManager';
+import { SCREEN_EVENT, type ScreenEvent } from '../../engine/events/ScreenEvent';
 
 export class GameOverScreen extends BaseScreen {
-  private restartRequested = false;
+  private readonly input: InputManager;
 
-  public enter(): void {
-    window.addEventListener('keydown', this.onKeyDown);
+  public constructor(input: InputManager) {
+    super();
+    this.input = input;
   }
-  public exit(): void {
-    window.removeEventListener('keydown', this.onKeyDown);
-  }
+
+  public enter(): void {}
+  public exit(): void {}
+
   public update(deltaTime: number): ScreenEvent {
-    if (!this.restartRequested) {
+    if (!this.input.wasKeyPressed('Enter')) {
       return SCREEN_EVENT.None;
     }
     console.log(deltaTime);
-    this.restartRequested = false;
     return SCREEN_EVENT.RestartGame;
   }
 
@@ -30,12 +32,4 @@ export class GameOverScreen extends BaseScreen {
 
     ctx.fillText('Press ENTER to restart', ctx.canvas.width / 2, ctx.canvas.height / 2);
   }
-
-  private readonly onKeyDown = (event: KeyboardEvent): void => {
-    switch (event.key) {
-      case 'Enter':
-        this.restartRequested = true;
-        break;
-    }
-  };
 }

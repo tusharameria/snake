@@ -1,4 +1,4 @@
-import type { ScreenEvent } from './ScreenEvent';
+import type { ScreenEvent } from '../events/ScreenEvent';
 
 export interface Screen {
   enter(): void;

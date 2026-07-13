@@ -1,4 +1,4 @@
-import { GRID_HEIGHT, GRID_WIDTH } from './Constants';
+import { GRID_HEIGHT, GRID_WIDTH } from '../Constants';
 import { DIRECTIONS, type Direction } from './Direction';
 import type { Position } from './Position';
 

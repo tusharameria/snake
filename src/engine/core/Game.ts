@@ -1,12 +1,14 @@
-import { GAME_STATE, type GameState } from '../game/GameState';
-import type { Scene } from './Scene';
-import { SCENE_EVENT } from './SceneEvent';
-import type { Screen } from './Screen';
-import { SCREEN_EVENT } from './ScreenEvent';
+import { GAME_STATE, type GameState } from '../state/GameState';
+import type { InputManager } from '../input/InputManager';
+import type { Scene } from '../scenes/Scene';
+import { SCENE_EVENT } from '../events/SceneEvent';
+import type { Screen } from '../screens/Screen';
+import { SCREEN_EVENT } from '../events/ScreenEvent';
 
 export class Game {
   private readonly canvas: HTMLCanvasElement;
   private readonly ctx: CanvasRenderingContext2D;
+  private readonly inputManager: InputManager;
   private readonly scene: Scene;
   private readonly homeScreen: Screen;
   private readonly gameOverScreen: Screen;
@@ -18,6 +20,7 @@ export class Game {
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
+    inputManager: InputManager,
     scene: Scene,
     homeScreen: Screen,
     gameOverScreen: Screen,
@@ -25,6 +28,7 @@ export class Game {
   ) {
     this.canvas = canvas;
     this.ctx = ctx;
+    this.inputManager = inputManager;
     this.scene = scene;
     this.state = GAME_STATE.Home;
     this.homeScreen = homeScreen;
@@ -48,6 +52,7 @@ export class Game {
     this.renderScreen();
     this.renderScene();
 
+    this.inputManager.clear();
     requestAnimationFrame(this.loop);
   };
 
