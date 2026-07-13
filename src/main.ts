@@ -3,6 +3,7 @@ import { Game } from './engine/Game';
 import { SnakeScene } from './game/SnakeScene';
 import { HomeScreen } from './game/HomeScreen';
 import { GameOverScreen } from './game/GameOverScreen';
+import { PauseScreen } from './game/PauseScreen';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 
@@ -22,5 +23,6 @@ canvas.height = window.innerHeight;
 const scene = new SnakeScene();
 const homeScreen = new HomeScreen();
 const gameOverScreen = new GameOverScreen();
-const game = new Game(canvas, ctx, scene, homeScreen, gameOverScreen);
+const pauseScreen = new PauseScreen();
+const game = new Game(canvas, ctx, scene, homeScreen, gameOverScreen, pauseScreen);
 game.start();

@@ -11,6 +11,7 @@ export class SnakeScene implements Scene {
   private readonly snake: Snake;
   private readonly board: Board;
   private readonly food: Food;
+  private pauseRequested: boolean;
 
   private timeElapsed = 0;
   private timePerStep = 150;
@@ -20,6 +21,7 @@ export class SnakeScene implements Scene {
     this.snake = new Snake();
     const randomPosition = this.generateRandomEmptyPosition();
     this.food = new Food(randomPosition);
+    this.pauseRequested = false;
   }
 
   private readonly onKeyDown = (event: KeyboardEvent): void => {
@@ -36,6 +38,10 @@ export class SnakeScene implements Scene {
       case 'ArrowRight':
         this.snake.setDirection(DIRECTIONS.Right);
         break;
+      case 'P':
+      case 'p':
+        this.pauseRequested = true;
+        break;
     }
   };
 
@@ -48,6 +54,10 @@ export class SnakeScene implements Scene {
   }
 
   public update(deltaTime: number): SceneEvent {
+    if (this.pauseRequested) {
+      this.pauseRequested = false;
+      return SCENE_EVENT.PauseGame;
+    }
     this.timeElapsed += deltaTime;
     while (this.timeElapsed >= this.timePerStep) {
       const nextHead = this.snake.getNextHeadPosition();
@@ -78,6 +88,7 @@ export class SnakeScene implements Scene {
     this.snake.reset();
     this.food.respawn(this.generateRandomEmptyPosition());
     this.timeElapsed = 0;
+    this.pauseRequested = false;
   }
 
   private renderBoard(ctx: CanvasRenderingContext2D): void {

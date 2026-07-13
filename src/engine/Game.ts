@@ -10,6 +10,7 @@ export class Game {
   private readonly scene: Scene;
   private readonly homeScreen: Screen;
   private readonly gameOverScreen: Screen;
+  private readonly pauseScreen: Screen;
   private state: GameState;
 
   private lastFrameTime = 0;
@@ -20,6 +21,7 @@ export class Game {
     scene: Scene,
     homeScreen: Screen,
     gameOverScreen: Screen,
+    pauseScreen: Screen,
   ) {
     this.canvas = canvas;
     this.ctx = ctx;
@@ -27,6 +29,7 @@ export class Game {
     this.state = GAME_STATE.Home;
     this.homeScreen = homeScreen;
     this.gameOverScreen = gameOverScreen;
+    this.pauseScreen = pauseScreen;
   }
 
   public start(): void {
@@ -48,40 +51,6 @@ export class Game {
     requestAnimationFrame(this.loop);
   };
 
-  private setState(state: GameState): void {
-    if (this.state === state) return;
-
-    switch (this.state) {
-      case GAME_STATE.Home:
-        this.homeScreen.exit();
-        break;
-
-      case GAME_STATE.Playing:
-        this.scene.exit();
-        break;
-
-      case GAME_STATE.GameOver:
-        this.gameOverScreen.exit();
-        break;
-    }
-
-    this.state = state;
-
-    switch (this.state) {
-      case GAME_STATE.Home:
-        this.homeScreen.enter();
-        break;
-
-      case GAME_STATE.Playing:
-        this.scene.enter();
-        break;
-
-      case GAME_STATE.GameOver:
-        this.gameOverScreen.enter();
-        break;
-    }
-  }
-
   private updateScreen(deltaTime: number): void {
     const currentScreen = this.getCurrentScreen();
     if (currentScreen !== null) {
@@ -93,6 +62,10 @@ export class Game {
 
         case SCREEN_EVENT.RestartGame:
           this.scene.reset();
+          this.setState(GAME_STATE.Playing);
+          break;
+
+        case SCREEN_EVENT.ResumeGame:
           this.setState(GAME_STATE.Playing);
           break;
 
@@ -111,9 +84,55 @@ export class Game {
           this.setState(GAME_STATE.GameOver);
           break;
 
+        case SCENE_EVENT.PauseGame:
+          this.setState(GAME_STATE.Paused);
+          break;
+
         case SCENE_EVENT.None:
           break;
       }
+    }
+  }
+
+  private setState(state: GameState): void {
+    if (this.state === state) return;
+
+    switch (this.state) {
+      case GAME_STATE.Home:
+        this.homeScreen.exit();
+        break;
+
+      case GAME_STATE.Playing:
+        this.scene.exit();
+        break;
+
+      case GAME_STATE.GameOver:
+        this.gameOverScreen.exit();
+        break;
+
+      case GAME_STATE.Paused:
+        this.pauseScreen.exit();
+        break;
+    }
+
+    this.state = state;
+
+    switch (this.state) {
+      case GAME_STATE.Home:
+        this.homeScreen.enter();
+        break;
+
+      case GAME_STATE.Playing:
+        this.scene.enter();
+        break;
+
+      case GAME_STATE.GameOver:
+        this.gameOverScreen.enter();
+        break;
+
+      case GAME_STATE.Paused:
+        this.pauseScreen.enter();
+        break;
     }
   }
 
@@ -138,6 +157,9 @@ export class Game {
 
       case GAME_STATE.GameOver:
         return this.gameOverScreen;
+
+      case GAME_STATE.Paused:
+        return this.pauseScreen;
 
       default:
         return null;
