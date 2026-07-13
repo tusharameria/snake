@@ -1,7 +1,7 @@
-import type { Screen } from '../engine/Screen';
+import { BaseScreen } from '../engine/BaseScreen';
 import { SCREEN_EVENT, type ScreenEvent } from '../engine/ScreenEvent';
 
-export class GameOverScreen implements Screen {
+export class GameOverScreen extends BaseScreen {
   private restartRequested = false;
 
   public enter(): void {
@@ -14,6 +14,7 @@ export class GameOverScreen implements Screen {
     if (!this.restartRequested) {
       return SCREEN_EVENT.None;
     }
+    console.log(deltaTime);
     this.restartRequested = false;
     return SCREEN_EVENT.RestartGame;
   }

@@ -1,6 +1,5 @@
 import './style.css';
 import { Game } from './engine/Game';
-import { type Screen } from './engine/Screen';
 import { SnakeScene } from './game/SnakeScene';
 import { HomeScreen } from './game/HomeScreen';
 import { GameOverScreen } from './game/GameOverScreen';
@@ -21,7 +20,7 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const scene = new SnakeScene();
-const homeScreen: Screen = new HomeScreen();
-const gameOverScreen: Screen = new GameOverScreen();
+const homeScreen = new HomeScreen();
+const gameOverScreen = new GameOverScreen();
 const game = new Game(canvas, ctx, scene, homeScreen, gameOverScreen);
 game.start();

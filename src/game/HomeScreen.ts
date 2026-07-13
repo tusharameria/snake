@@ -1,7 +1,7 @@
-import type { Screen } from '../engine/Screen';
+import { BaseScreen } from '../engine/BaseScreen';
 import { SCREEN_EVENT, type ScreenEvent } from '../engine/ScreenEvent';
 
-export class HomeScreen implements Screen {
+export class HomeScreen extends BaseScreen {
   private startRequested = false;
 
   public enter(): void {
@@ -14,6 +14,7 @@ export class HomeScreen implements Screen {
     if (!this.startRequested) {
       return SCREEN_EVENT.None;
     }
+    console.log(deltaTime);
     this.startRequested = false;
     return SCREEN_EVENT.StartGame;
   }
