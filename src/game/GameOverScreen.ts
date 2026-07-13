@@ -1,8 +1,8 @@
 import type { Screen } from '../engine/Screen';
 import { SCREEN_EVENT, type ScreenEvent } from '../engine/ScreenEvent';
 
-export class HomeScreen implements Screen {
-  private startRequested = false;
+export class GameOverScreen implements Screen {
+  private restartRequested = false;
 
   public enter(): void {
     window.addEventListener('keydown', this.onKeyDown);
@@ -11,11 +11,11 @@ export class HomeScreen implements Screen {
     window.removeEventListener('keydown', this.onKeyDown);
   }
   public update(deltaTime: number): ScreenEvent {
-    if (!this.startRequested) {
+    if (!this.restartRequested) {
       return SCREEN_EVENT.None;
     }
-    this.startRequested = false;
-    return SCREEN_EVENT.StartGame;
+    this.restartRequested = false;
+    return SCREEN_EVENT.RestartGame;
   }
 
   public render(ctx: CanvasRenderingContext2D): void {
@@ -27,13 +27,13 @@ export class HomeScreen implements Screen {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    ctx.fillText('Press ENTER to start', ctx.canvas.width / 2, ctx.canvas.height / 2);
+    ctx.fillText('Press ENTER to restart', ctx.canvas.width / 2, ctx.canvas.height / 2);
   }
 
   private readonly onKeyDown = (event: KeyboardEvent): void => {
     switch (event.key) {
       case 'Enter':
-        this.startRequested = true;
+        this.restartRequested = true;
         break;
     }
   };

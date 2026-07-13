@@ -9,6 +9,7 @@ export class Game {
   private readonly ctx: CanvasRenderingContext2D;
   private readonly scene: Scene;
   private readonly homeScreen: Screen;
+  private readonly gameOverScreen: Screen;
   private state: GameState;
 
   private lastFrameTime = 0;
@@ -18,12 +19,14 @@ export class Game {
     ctx: CanvasRenderingContext2D,
     scene: Scene,
     homeScreen: Screen,
+    gameOverScreen: Screen,
   ) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.scene = scene;
     this.state = GAME_STATE.Home;
     this.homeScreen = homeScreen;
+    this.gameOverScreen = gameOverScreen;
   }
 
   public start(): void {
@@ -35,56 +38,66 @@ export class Game {
     const deltaTime = this.lastFrameTime === 0 ? 0 : timestamp - this.lastFrameTime;
     this.lastFrameTime = timestamp;
 
-    switch (this.state) {
-      case GAME_STATE.Home: {
-        const event = this.homeScreen.update(deltaTime);
-        switch (event) {
-          case SCREEN_EVENT.StartGame:
-            this.setState(GAME_STATE.Playing);
-            break;
+    // ----------------
+    // ----------------
+    // Update
+    // ----------------
+    // ----------------
 
-          case SCREEN_EVENT.None:
-            break;
-        }
-        break;
+    // --------
+    // Update Screen
+    // --------
+    const currentScreen = this.getCurrentScreen();
+    if (currentScreen !== null) {
+      const event = currentScreen.update(deltaTime);
+      switch (event) {
+        case SCREEN_EVENT.StartGame:
+          this.setState(GAME_STATE.Playing);
+          break;
+
+        case SCREEN_EVENT.RestartGame:
+          this.scene.reset();
+          this.setState(GAME_STATE.Playing);
+          break;
+
+        case SCREEN_EVENT.None:
+          break;
       }
+    }
+    // --------
+    // Update Scene
+    // --------
+    const currentScene = this.getCurrentScene();
+    if (currentScene !== null) {
+      const event = currentScene.update(deltaTime);
+      switch (event) {
+        case SCENE_EVENT.GameOver:
+          this.setState(GAME_STATE.GameOver);
+          break;
 
-      case GAME_STATE.Playing: {
-        const event = this.scene.update(deltaTime);
-        switch (event) {
-          case SCENE_EVENT.GameOver:
-            this.setState(GAME_STATE.GameOver);
-            break;
-
-          case SCENE_EVENT.None:
-            break;
-        }
-        break;
+        case SCENE_EVENT.None:
+          break;
       }
-
-      case GAME_STATE.Paused:
-        break;
-
-      case GAME_STATE.GameOver:
-        break;
     }
 
-    switch (this.state) {
-      case GAME_STATE.Home:
-        this.homeScreen.render(this.ctx);
-        break;
+    // ----------------
+    // ----------------
+    // Render
+    // ----------------
+    // ----------------
 
-      case GAME_STATE.Playing:
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.scene.render(this.ctx);
-        break;
-
-      case GAME_STATE.Paused:
-        break;
-
-      case GAME_STATE.GameOver:
-        break;
-    }
+    // --------
+    // Clear Canvas
+    // --------
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // --------
+    // Render Screen
+    // --------
+    currentScreen?.render(this.ctx);
+    // --------
+    // Render Scene
+    // --------
+    currentScene?.render(this.ctx);
 
     requestAnimationFrame(this.loop);
   };
@@ -100,6 +113,10 @@ export class Game {
       case GAME_STATE.Playing:
         this.scene.exit();
         break;
+
+      case GAME_STATE.GameOver:
+        this.gameOverScreen.exit();
+        break;
     }
 
     this.state = state;
@@ -112,6 +129,33 @@ export class Game {
       case GAME_STATE.Playing:
         this.scene.enter();
         break;
+
+      case GAME_STATE.GameOver:
+        this.gameOverScreen.enter();
+        break;
+    }
+  }
+
+  private getCurrentScreen(): Screen | null {
+    switch (this.state) {
+      case GAME_STATE.Home:
+        return this.homeScreen;
+
+      case GAME_STATE.GameOver:
+        return this.gameOverScreen;
+
+      default:
+        return null;
+    }
+  }
+
+  private getCurrentScene(): Scene | null {
+    switch (this.state) {
+      case GAME_STATE.Playing:
+        return this.scene;
+
+      default:
+        return null;
     }
   }
 }
