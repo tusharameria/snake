@@ -38,66 +38,12 @@ export class Game {
     const deltaTime = this.lastFrameTime === 0 ? 0 : timestamp - this.lastFrameTime;
     this.lastFrameTime = timestamp;
 
-    // ----------------
-    // ----------------
-    // Update
-    // ----------------
-    // ----------------
+    this.updateScreen(deltaTime);
+    this.updateScene(deltaTime);
 
-    // --------
-    // Update Screen
-    // --------
-    const currentScreen = this.getCurrentScreen();
-    if (currentScreen !== null) {
-      const event = currentScreen.update(deltaTime);
-      switch (event) {
-        case SCREEN_EVENT.StartGame:
-          this.setState(GAME_STATE.Playing);
-          break;
-
-        case SCREEN_EVENT.RestartGame:
-          this.scene.reset();
-          this.setState(GAME_STATE.Playing);
-          break;
-
-        case SCREEN_EVENT.None:
-          break;
-      }
-    }
-    // --------
-    // Update Scene
-    // --------
-    const currentScene = this.getCurrentScene();
-    if (currentScene !== null) {
-      const event = currentScene.update(deltaTime);
-      switch (event) {
-        case SCENE_EVENT.GameOver:
-          this.setState(GAME_STATE.GameOver);
-          break;
-
-        case SCENE_EVENT.None:
-          break;
-      }
-    }
-
-    // ----------------
-    // ----------------
-    // Render
-    // ----------------
-    // ----------------
-
-    // --------
-    // Clear Canvas
-    // --------
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    // --------
-    // Render Screen
-    // --------
-    currentScreen?.render(this.ctx);
-    // --------
-    // Render Scene
-    // --------
-    currentScene?.render(this.ctx);
+    this.renderScreen();
+    this.renderScene();
 
     requestAnimationFrame(this.loop);
   };
@@ -133,6 +79,55 @@ export class Game {
       case GAME_STATE.GameOver:
         this.gameOverScreen.enter();
         break;
+    }
+  }
+
+  private updateScreen(deltaTime: number): void {
+    const currentScreen = this.getCurrentScreen();
+    if (currentScreen !== null) {
+      const event = currentScreen.update(deltaTime);
+      switch (event) {
+        case SCREEN_EVENT.StartGame:
+          this.setState(GAME_STATE.Playing);
+          break;
+
+        case SCREEN_EVENT.RestartGame:
+          this.scene.reset();
+          this.setState(GAME_STATE.Playing);
+          break;
+
+        case SCREEN_EVENT.None:
+          break;
+      }
+    }
+  }
+
+  private updateScene(deltaTime: number): void {
+    const currentScene = this.getCurrentScene();
+    if (currentScene !== null) {
+      const event = currentScene.update(deltaTime);
+      switch (event) {
+        case SCENE_EVENT.GameOver:
+          this.setState(GAME_STATE.GameOver);
+          break;
+
+        case SCENE_EVENT.None:
+          break;
+      }
+    }
+  }
+
+  private renderScreen(): void {
+    const currentScreen = this.getCurrentScreen();
+    if (currentScreen !== null) {
+      currentScreen.render(this.ctx);
+    }
+  }
+
+  private renderScene(): void {
+    const currentScene = this.getCurrentScene();
+    if (currentScene !== null) {
+      currentScene.render(this.ctx);
     }
   }
 
