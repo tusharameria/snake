@@ -1,9 +1,8 @@
 import { GAME_STATE, type GameState } from '../state/GameState';
 import type { InputManager } from '../input/InputManager';
 import type { Scene } from '../scenes/Scene';
-import { SCENE_EVENT } from '../events/SceneEvent';
 import type { Screen } from '../screens/Screen';
-import { SCREEN_EVENT } from '../events/ScreenEvent';
+import { GAME_EVENT } from '../events/GameEvent';
 
 export class Game {
   private readonly canvas: HTMLCanvasElement;
@@ -45,59 +44,44 @@ export class Game {
     const deltaTime = this.lastFrameTime === 0 ? 0 : timestamp - this.lastFrameTime;
     this.lastFrameTime = timestamp;
 
-    this.updateScreen(deltaTime);
-    this.updateScene(deltaTime);
-
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.renderScreen();
-    this.renderScene();
-
-    this.inputManager.clear();
-    requestAnimationFrame(this.loop);
-  };
-
-  private updateScreen(deltaTime: number): void {
-    const currentScreen = this.getCurrentScreen();
-    if (currentScreen !== null) {
-      const event = currentScreen.update(deltaTime);
+    const currentObject = this.getCurrentObject();
+    if (currentObject !== null) {
+      const event = currentObject.update(deltaTime);
       switch (event) {
-        case SCREEN_EVENT.StartGame:
+        // SCREEN EVENTS
+        case GAME_EVENT.StartGame:
           this.setState(GAME_STATE.Playing);
           break;
 
-        case SCREEN_EVENT.RestartGame:
+        case GAME_EVENT.RestartGame:
           this.scene.reset();
           this.setState(GAME_STATE.Playing);
           break;
 
-        case SCREEN_EVENT.ResumeGame:
+        case GAME_EVENT.ResumeGame:
           this.setState(GAME_STATE.Playing);
           break;
 
-        case SCREEN_EVENT.None:
-          break;
-      }
-    }
-  }
-
-  private updateScene(deltaTime: number): void {
-    const currentScene = this.getCurrentScene();
-    if (currentScene !== null) {
-      const event = currentScene.update(deltaTime);
-      switch (event) {
-        case SCENE_EVENT.GameOver:
+        // SCENE EVENTS
+        case GAME_EVENT.GameOver:
           this.setState(GAME_STATE.GameOver);
           break;
 
-        case SCENE_EVENT.PauseGame:
+        case GAME_EVENT.PauseGame:
           this.setState(GAME_STATE.Paused);
           break;
 
-        case SCENE_EVENT.None:
+        case GAME_EVENT.None:
           break;
       }
+
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      currentObject.render(this.ctx);
     }
-  }
+
+    this.inputManager.clear();
+    requestAnimationFrame(this.loop);
+  };
 
   private setState(state: GameState): void {
     if (this.state === state) return;
@@ -141,22 +125,9 @@ export class Game {
     }
   }
 
-  private renderScreen(): void {
-    const currentScreen = this.getCurrentScreen();
-    if (currentScreen !== null) {
-      currentScreen.render(this.ctx);
-    }
-  }
-
-  private renderScene(): void {
-    const currentScene = this.getCurrentScene();
-    if (currentScene !== null) {
-      currentScene.render(this.ctx);
-    }
-  }
-
-  private getCurrentScreen(): Screen | null {
+  private getCurrentObject(): Screen | Scene | null {
     switch (this.state) {
+      // SCREENS
       case GAME_STATE.Home:
         return this.homeScreen;
 
@@ -166,13 +137,7 @@ export class Game {
       case GAME_STATE.Paused:
         return this.pauseScreen;
 
-      default:
-        return null;
-    }
-  }
-
-  private getCurrentScene(): Scene | null {
-    switch (this.state) {
+      // SCENES
       case GAME_STATE.Playing:
         return this.scene;
 

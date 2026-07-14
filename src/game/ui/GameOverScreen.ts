@@ -1,6 +1,6 @@
 import { BaseScreen } from '../../engine/screens/BaseScreen';
 import type { InputManager } from '../../engine/input/InputManager';
-import { SCREEN_EVENT, type ScreenEvent } from '../../engine/events/ScreenEvent';
+import { GAME_EVENT, type GameEvent } from '../../engine/events/GameEvent';
 
 export class GameOverScreen extends BaseScreen {
   private readonly input: InputManager;
@@ -13,12 +13,12 @@ export class GameOverScreen extends BaseScreen {
   public enter(): void {}
   public exit(): void {}
 
-  public update(deltaTime: number): ScreenEvent {
+  public update(deltaTime: number): GameEvent {
     if (!this.input.wasKeyPressed('Enter')) {
-      return SCREEN_EVENT.None;
+      return GAME_EVENT.None;
     }
     console.log(deltaTime);
-    return SCREEN_EVENT.RestartGame;
+    return GAME_EVENT.RestartGame;
   }
 
   public render(ctx: CanvasRenderingContext2D): void {

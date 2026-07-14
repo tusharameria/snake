@@ -1,6 +1,6 @@
 import type { InputManager } from '../../engine/input/InputManager';
 import type { Scene } from '../../engine/scenes/Scene';
-import { SCENE_EVENT, type SceneEvent } from '../../engine/events/SceneEvent';
+import { GAME_EVENT, type GameEvent } from '../../engine/events/GameEvent';
 import { Board } from '../entities/Board';
 import { CELL_SIZE, GRID_HEIGHT, GRID_WIDTH } from '../Constants';
 import { DIRECTIONS } from '../entities/Direction';
@@ -46,16 +46,16 @@ export class ClassicScene implements Scene {
   public enter(): void {}
   public exit(): void {}
 
-  public update(deltaTime: number): SceneEvent {
-    if (this.input.wasKeyPressed('P') || this.input.wasKeyPressed('p')) {
-      return SCENE_EVENT.PauseGame;
+  public update(deltaTime: number): GameEvent {
+    if (this.input.wasKeyPressed('Escape')) {
+      return GAME_EVENT.PauseGame;
     }
     this.checkPressedKey();
     this.timeElapsed += deltaTime;
     while (this.timeElapsed >= this.timePerStep) {
       const nextHead = this.snake.getNextHeadPosition();
       if (this.board.hasWallAt(nextHead) || this.snake.willCollideWithBody(nextHead)) {
-        return SCENE_EVENT.GameOver;
+        return GAME_EVENT.GameOver;
       } else {
         if (this.food.position.x === nextHead.x && this.food.position.y === nextHead.y) {
           this.snake.feed();
@@ -65,7 +65,7 @@ export class ClassicScene implements Scene {
         this.timeElapsed -= this.timePerStep;
       }
     }
-    return SCENE_EVENT.None;
+    return GAME_EVENT.None;
   }
 
   public render(ctx: CanvasRenderingContext2D): void {
