@@ -1,30 +1,12 @@
 import './style.css';
-import { Game } from './engine/core/Game';
-import { ClassicScene } from './game/scenes/ClassicScene';
-import { HomeScreen } from './game/ui/HomeScreen';
-import { GameOverScreen } from './game/ui/GameOverScreen';
-import { PauseScreen } from './game/ui/PauseScreen';
-import { InputManager } from './engine/input/InputManager';
 
-const canvas = document.getElementById('game') as HTMLCanvasElement;
+import { App } from './app/App';
 
-if (!canvas) {
-  throw new Error('Canvas not found');
+const container = document.getElementById('app');
+
+if (container === null) {
+  throw new Error('App container not found.');
 }
 
-const ctx = canvas.getContext('2d');
-
-if (!ctx) {
-  throw new Error('Could not get 2D context');
-}
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const inputManager = new InputManager();
-const scene = new ClassicScene(inputManager);
-const homeScreen = new HomeScreen(inputManager);
-const gameOverScreen = new GameOverScreen(inputManager);
-const pauseScreen = new PauseScreen(inputManager);
-const game = new Game(canvas, ctx, inputManager, scene, homeScreen, gameOverScreen, pauseScreen);
-game.start();
+const app = new App(container);
+app.start();
