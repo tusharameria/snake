@@ -10,24 +10,26 @@ export class App {
 
   public constructor(container: HTMLElement) {
     this.container = container;
-    this.homeView = new HomeView(this.showSnakeView);
+    this.homeView = new HomeView(this.handlePlayClicked);
     this.currentView = this.homeView;
-    this.snakeView = new SnakeView(this.showHomeView);
+    this.snakeView = new SnakeView(this.handleBackClicked);
   }
 
   public start(): void {
     this.currentView.mount(this.container);
   }
 
-  private readonly showHomeView = (): void => {
+  private readonly switchView = (targetView: View) => {
     this.currentView.unmount();
-    this.currentView = this.homeView;
+    this.currentView = targetView;
     this.currentView.mount(this.container);
   };
 
-  private readonly showSnakeView = (): void => {
-    this.currentView.unmount();
-    this.currentView = this.snakeView;
-    this.currentView.mount(this.container);
+  private readonly handleBackClicked = (): void => {
+    this.switchView(this.homeView);
+  };
+
+  private readonly handlePlayClicked = (): void => {
+    this.switchView(this.snakeView);
   };
 }
