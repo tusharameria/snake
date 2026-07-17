@@ -13,6 +13,7 @@ export class Game {
   private readonly gameOverScreen: Screen;
   private readonly pauseScreen: Screen;
   private state: GameState;
+  private animationFrameId: number | null = null;
 
   private lastFrameTime = 0;
 
@@ -37,7 +38,14 @@ export class Game {
 
   public start(): void {
     this.homeScreen.enter();
-    this.loop(0);
+    this.animationFrameId = requestAnimationFrame(this.loop);
+  }
+
+  public stop(): void {
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
   }
 
   private readonly loop = (timestamp: number): void => {
@@ -80,7 +88,7 @@ export class Game {
     }
 
     this.inputManager.clear();
-    requestAnimationFrame(this.loop);
+    this.animationFrameId = requestAnimationFrame(this.loop);
   };
 
   private setState(state: GameState): void {

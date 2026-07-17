@@ -1,5 +1,5 @@
 import type { View } from './View';
-import { mount as mountGame } from '../game';
+import { mount as mountGame, unmount as unmountGame } from '../game';
 
 export class SnakeView implements View {
   private root: HTMLDivElement | null = null;
@@ -21,15 +21,13 @@ export class SnakeView implements View {
     backButton.addEventListener('click', this.onBackClicked);
 
     mountGame(root);
-
     root.appendChild(backButton);
-
     container.appendChild(root);
-
     this.root = root;
   }
 
   public unmount(): void {
+    unmountGame();
     this.root?.remove();
     this.root = null;
   }

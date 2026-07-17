@@ -7,6 +7,9 @@ import { GameOverScreen } from './ui/GameOverScreen';
 import { HomeScreen } from './ui/HomeScreen';
 import { PauseScreen } from './ui/PauseScreen';
 
+let game: Game | null = null;
+let inputManager: InputManager | null = null;
+
 export function mount(container: HTMLElement): void {
   const canvas = document.createElement('canvas');
   Viewport.attach(canvas);
@@ -19,14 +22,19 @@ export function mount(container: HTMLElement): void {
     throw new Error('Failed to get 2D context.');
   }
 
-  const inputManager = new InputManager();
+  inputManager = new InputManager();
   const scene = new ClassicScene(inputManager);
   const homeScreen = new HomeScreen(inputManager);
   const gameOverScreen = new GameOverScreen(inputManager);
   const pauseScreen = new PauseScreen(inputManager);
 
-  const game = new Game(canvas, ctx, inputManager, scene, homeScreen, gameOverScreen, pauseScreen);
-
+  game = new Game(canvas, ctx, inputManager, scene, homeScreen, gameOverScreen, pauseScreen);
   game.start();
 }
-export function unmount(): void {}
+
+export function unmount(): void {
+  inputManager?.dispose();
+  inputManager = null;
+  game?.stop();
+  game = null;
+}

@@ -16,4 +16,8 @@ export class InputManager {
   public clear(): void {
     this.pressedKeys.clear();
   }
+
+  public dispose() {
+    window.removeEventListener('keydown', this.onKeyDown);
+  }
 }
