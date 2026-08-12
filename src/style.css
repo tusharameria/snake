@@ -13,3 +13,14 @@ body {
 body {
   overflow: hidden;
 }
+
+:root {
+  --background: #121212;
+  --surface: #1d1d1d;
+  --foreground: #f5f5f5;
+  --muted: #bdbdbd;
+  --primary: #42d392;
+  --shadow: #000000;
+  --border: #ffffff;
+  --font: 'Courier New', monospace;
+}
