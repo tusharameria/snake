@@ -1,5 +1,5 @@
-import type { Screen } from './state/screens/Screen';
-import type { GameEvent } from './events/GameEvent';
+import type { Screen } from '../screens/Screen';
+import type { GameEvent } from '../events/GameEvent';
 
 export abstract class BaseScreen implements Screen {
   public enter(): void {}
