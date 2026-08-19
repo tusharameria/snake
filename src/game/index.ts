@@ -1,6 +1,7 @@
 import { Game } from '../engine/core/Game';
 import { Viewport } from '../engine/core/Viewport';
 import { InputManager } from '../engine/input/InputManager';
+import { MobileControls } from '../engine/input/MobileControls';
 import { CELL_SIZE, GRID_HEIGHT, GRID_WIDTH } from './Constants';
 import { ClassicScene } from './scenes/ClassicScene';
 import { GameOverScreen } from './ui/GameOverScreen';
@@ -9,6 +10,7 @@ import { PauseScreen } from './ui/PauseScreen';
 
 let game: Game | null = null;
 let inputManager: InputManager | null = null;
+let mobileControls: MobileControls | null = null;
 
 export function mount(container: HTMLElement): void {
   const canvas = document.createElement('canvas');
@@ -23,6 +25,8 @@ export function mount(container: HTMLElement): void {
   }
 
   inputManager = new InputManager();
+  mobileControls = new MobileControls(inputManager);
+  mobileControls.mount(container);
   const scene = new ClassicScene(inputManager);
   const homeScreen = new HomeScreen(inputManager);
   const gameOverScreen = new GameOverScreen(inputManager);
@@ -33,6 +37,8 @@ export function mount(container: HTMLElement): void {
 }
 
 export function unmount(): void {
+  mobileControls?.unmount();
+  mobileControls = null;
   inputManager?.dispose();
   inputManager = null;
   game?.stop();

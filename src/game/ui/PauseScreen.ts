@@ -1,6 +1,7 @@
 import { BaseScreen } from '../../engine/screens/BaseScreen';
 import type { InputManager } from '../../engine/input/InputManager';
 import { GAME_EVENT, type GameEvent } from '../../engine/events/GameEvent';
+import { INPUT_ACTION } from '../../engine/input/InputAction';
 
 export class PauseScreen extends BaseScreen {
   private readonly input: InputManager;
@@ -14,7 +15,7 @@ export class PauseScreen extends BaseScreen {
   public exit(): void {}
 
   public update(deltaTime: number): GameEvent {
-    if (!this.input.wasKeyPressed('Escape')) {
+    if (!this.input.wasPressed(INPUT_ACTION.Pause)) {
       return GAME_EVENT.None;
     }
     console.log(deltaTime);

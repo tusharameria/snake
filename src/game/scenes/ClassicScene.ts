@@ -7,6 +7,7 @@ import { DIRECTIONS } from '../entities/Direction';
 import { Food } from '../entities/Food';
 import type { Position } from '../entities/Position';
 import { Snake } from '../entities/Snake';
+import { INPUT_ACTION } from '../../engine/input/InputAction';
 
 export class ClassicScene implements Scene {
   private readonly snake: Snake;
@@ -26,19 +27,19 @@ export class ClassicScene implements Scene {
   }
 
   private readonly checkPressedKey = (): void => {
-    if (this.input.wasKeyPressed('ArrowUp')) {
+    if (this.input.wasPressed(INPUT_ACTION.Up)) {
       this.snake.setDirection(DIRECTIONS.Up);
     }
 
-    if (this.input.wasKeyPressed('ArrowDown')) {
+    if (this.input.wasPressed(INPUT_ACTION.Down)) {
       this.snake.setDirection(DIRECTIONS.Down);
     }
 
-    if (this.input.wasKeyPressed('ArrowLeft')) {
+    if (this.input.wasPressed(INPUT_ACTION.Left)) {
       this.snake.setDirection(DIRECTIONS.Left);
     }
 
-    if (this.input.wasKeyPressed('ArrowRight')) {
+    if (this.input.wasPressed(INPUT_ACTION.Right)) {
       this.snake.setDirection(DIRECTIONS.Right);
     }
   };
@@ -47,7 +48,7 @@ export class ClassicScene implements Scene {
   public exit(): void {}
 
   public update(deltaTime: number): GameEvent {
-    if (this.input.wasKeyPressed('Escape')) {
+    if (this.input.wasPressed(INPUT_ACTION.Pause)) {
       return GAME_EVENT.PauseGame;
     }
     this.checkPressedKey();
